@@ -1,0 +1,35 @@
+TDAcesarin9:55-5-12-2019_1.txt
+TDA
+9:55-5-12-2019_
+cesarin
+Primer commit no se cambiaron lineas
+1
+1
+TDAgaby9:58-5-12-2019_1.txt
+TDA
+9:58-5-12-2019_
+gaby
+Primer commit no se cambiaron lineas
+1
+1
+TDAgaby9:58-5-12-2019_2.txt
+TDA
+9:58-5-12-2019_
+gaby
+1 
+0
+2
+TDAcesarin10:3-5-12-2019_2.txt
+TDA
+10:3-5-12-2019_
+cesarin
+p1 
+1
+2
+TDAcesarin10:4-5-12-2019_3.txt
+TDA
+10:4-5-12-2019_
+cesarin
+1 
+1
+3

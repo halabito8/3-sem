@@ -1,0 +1,461 @@
+#include"tipos.h"
+//query1
+void MayorAfluencia(MYSQL *mysql){
+  char buscar[100],buffer[1024];
+  int i;
+  MYSQL_RES *res;
+  MYSQL_ROW row;
+  system("clear");
+  sprintf(buffer,"SELECT nombre FROM p1_reservaciones LEFT JOIN p1_habitaciones USING(idHabitacion) LEFT JOIN p1_hoteles USING(idHotel) GROUP BY idHotel HAVING COUNT(idReservacion) = (SELECT COUNT(idReservacion) FROM p1_reservaciones LEFT JOIN p1_habitaciones USING(idHabitacion) GROUP BY idHotel ORDER BY COUNT(idReservacion) desc LIMIT 1);");
+  if(mysql_query(mysql,buffer)){
+    printf("Error con el query\n");
+    return;
+  }
+  if(!(res=mysql_store_result(mysql))){
+    printf("No hay presidentes con ese apellido\n");
+    return;
+  }
+  while(row=mysql_fetch_row(res)){
+    for(i=0;i<mysql_num_fields(res);i++){
+      if(row[i]!=NULL)
+	printf("%s\t",row[i]);
+      else
+	printf("--\t");
+    }
+    printf("\n");
+  }
+  mysql_free_result(res);
+}
+//query2
+void ComisionEmpleados(MYSQL *mysql){
+  char buscar[100],buffer[1024];
+  int i;
+  MYSQL_RES *res;
+  MYSQL_ROW row;
+  system("clear");
+  sprintf(buffer,"SELECT idEmpleado,nombre,COUNT(*) as reservaciones,SUM(precio)*comision as comision FROM p1_reservaciones LEFT JOIN p1_empleados USING(idEmpleado) LEFT JOIN p1_paquetes USING(idPaquete) GROUP BY idEmpleado;");
+  if(mysql_query(mysql,buffer)){
+    printf("Error con el query\n");
+    return;
+  }
+  if(!(res=mysql_store_result(mysql))){
+    printf("No hay presidentes con ese apellido\n");
+    return;
+  }
+  while(row=mysql_fetch_row(res)){
+    for(i=0;i<mysql_num_fields(res);i++){
+      if(row[i]!=NULL)
+	printf("%s\t",row[i]);
+    }
+    printf("\n");
+  }
+  mysql_free_result(res);
+}
+//query3
+void HuespedSCI(MYSQL *mysql){
+  char buscar[100],buffer[1024];
+  int i;
+  MYSQL_RES *res;
+  MYSQL_ROW row;
+  system("clear");
+  sprintf(buffer,"SELECT CONCAT(h.nombre,' ', h.apellido) FROM p1_huespedes h RIGHT JOIN p1_reservaciones USING(idHuesped) WHERE fechaCheckIn IS NULL;");
+  if(mysql_query(mysql,buffer)){
+    printf("Error con el query\n");
+    return;
+  }
+  if(!(res=mysql_store_result(mysql))){
+    printf("No hay presidentes con ese apellido\n");
+    return;
+  }
+  while(row=mysql_fetch_row(res)){
+    for(i=0;i<mysql_num_fields(res);i++){
+      if(row[i]!=NULL)
+	printf("%s\t",row[i]);
+    }
+    printf("\n");
+  }
+  mysql_free_result(res);
+}
+//query4
+void HuespedTH(MYSQL *mysql){
+  char buscar[100],buffer[1024];
+  int i;
+  MYSQL_RES *res;
+  MYSQL_ROW row;
+  system("clear");
+  sprintf(buffer,"SELECT CONCAT(h.nombre, ' ', h.apellido) FROM p1_huespedes h LEFT JOIN p1_reservaciones USING(idHuesped) WHERE fechaCheckIn IS NOT NULL AND fechaCheckOut IS NOT NULL;");
+  if(mysql_query(mysql,buffer)){
+    printf("Error con el query\n");
+    return;
+  }
+  if(!(res=mysql_store_result(mysql))){
+    printf("No hay presidentes con ese apellido\n");
+    return;
+  }
+  while(row=mysql_fetch_row(res)){
+    for(i=0;i<mysql_num_fields(res);i++){
+      if(row[i]!=NULL)
+	printf("%s\t",row[i]);
+    }
+    printf("\n");
+  }
+  mysql_free_result(res);
+}
+//query5
+void VentaCI(MYSQL *mysql){
+  char buscar[100],buffer[1024];
+  int i;
+  MYSQL_RES *res;
+  MYSQL_ROW row;
+  system("clear");
+  sprintf(buffer,"SELECT CONCAT(h.nombre, ' ', h.apellido) AS huesped, CONCAT(e.nombre, ' ', e.apellido) AS empleado, fechaCheckIn FROM p1_huespedes h RIGHT JOIN p1_reservaciones USING(idHuesped) LEFT JOIN p1_empleados e USING(idEmpleado) WHERE fechaCheckIn IS NOT NULL;");
+  if(mysql_query(mysql,buffer)){
+    printf("Error con el query\n");
+    return;
+  }
+  if(!(res=mysql_store_result(mysql))){
+    printf("No hay presidentes con ese apellido\n");
+    return;
+  }
+  while(row=mysql_fetch_row(res)){
+    for(i=0;i<mysql_num_fields(res);i++){
+      if(row[i]!=NULL)
+	printf("%s\t",row[i]);
+    }
+    printf("\n");
+  }
+  mysql_free_result(res);
+}
+//query6
+void InfoEmpleados(MYSQL *mysql){
+  char buscar[100],buffer[1024];
+  int i;
+  MYSQL_RES *res;
+  MYSQL_ROW row;
+  system("clear");
+  sprintf(buffer,"SELECT e.nombre, h.nombre as hotel, idTurno, horae as entrada, horas as salida, puesto, COUNT(idAusencia) as ausencias FROM p1_empleados e RIGHT JOIN p1_hoteles h USING(idHotel) LEFT JOIN p1_turnos USING(idTurno) LEFT JOIN p1_tipoEmpleado USING(idTipo) LEFT JOIN p1_ausencias USING(idEmpleado) GROUP BY idEmpleado;");
+  if(mysql_query(mysql,buffer)){
+    printf("Error con el query\n");
+    return;
+  }
+  if(!(res=mysql_store_result(mysql))){
+    printf("No hay presidentes con ese apellido\n");
+    return;
+  }
+  while(row=mysql_fetch_row(res)){
+    for(i=0;i<mysql_num_fields(res);i++){
+      if(row[i]!=NULL)
+	printf("%s\t",row[i]);
+    }
+    printf("\n");
+  }
+  mysql_free_result(res);
+}
+//query7
+void CuartosHH(MYSQL *mysql){
+  char buscar[100],buffer[1024];
+  int i;
+  MYSQL_RES *res;
+  MYSQL_ROW row;
+  system("clear");
+  sprintf(buffer,"SELECT CONCAT(hu.nombre,' ',hu.apellido) as nombre,ho.nombre as hotel,numeroHabitacion FROM p1_huespedes hu RIGHT JOIN p1_reservaciones USING(idHuesped) LEFT JOIN p1_habitaciones USING(idHabitacion) LEFT JOIN p1_hoteles ho USING(idHotel);");
+  if(mysql_query(mysql,buffer)){
+    printf("Error con el query\n");
+    return;
+  }
+  if(!(res=mysql_store_result(mysql))){
+    printf("No hay presidentes con ese apellido\n");
+    return;
+  }
+  while(row=mysql_fetch_row(res)){
+    for(i=0;i<mysql_num_fields(res);i++){
+      if(row[i]!=NULL)
+	printf("%s\t",row[i]);
+    }
+    printf("\n");
+  }
+  mysql_free_result(res);
+}
+/*************
+/*query 8
+/*************/
+
+//query9
+void Estadistica(MYSQL *mysql){
+  char buscar[100],buffer[1024];
+  int i;
+  MYSQL_RES *res;
+  MYSQL_ROW row;
+  system("clear");
+  sprintf(buffer,"SELECT (COUNT(sp.idReservacion) + COUNT(idCancelacion))/COUNT(r.idReservacion) AS Porcentaje_sp_cancel FROM p1_reservaciones r LEFT JOIN p1_sin_presentar sp USING(idReservacion) LEFT JOIN p1_cancelaciones USING(idReservacion);");
+  if(mysql_query(mysql,buffer)){
+    printf("Error con el query\n");
+    return;
+  }
+  if(!(res=mysql_store_result(mysql))){
+    printf("No hay presidentes con ese apellido\n");
+    return;
+  }
+  while(row=mysql_fetch_row(res)){
+    for(i=0;i<mysql_num_fields(res);i++){
+      if(row[i]!=NULL)
+	printf("%s\t",row[i]);
+    }
+    printf("\n");
+  }
+  mysql_free_result(res);
+}
+//query10
+void Faltas(MYSQL *mysql){
+  char buscar[100],buffer[1024];
+  int i,dia,mes,anio;
+  MYSQL_RES *res;
+  MYSQL_ROW row;
+  system("clear");
+  printf("Que dia?\n");
+  __fpurge(stdin);
+  scanf("%i",&dia);
+  printf("Que mes?\n");
+  __fpurge(stdin);
+  scanf("%i",&mes);
+  printf("Que anio?\n");
+  __fpurge(stdin);
+  scanf("%i",&anio);
+  sprintf(buffer,"SELECT CONCAT(nombre,' ',apellido) FROM p1_ausencias LEFT JOIN p1_empleados USING(idEmpleado) WHERE DAY(fecha)=%i AND MONTH(fecha)=%i AND YEAR(fecha)=%i;",dia,mes,anio);
+  if(mysql_query(mysql,buffer)){
+    printf("Error con el query\n");
+    return;
+  }
+  if(!(res=mysql_store_result(mysql))){
+    printf("No hay faltas en esa fecha\n");
+    return;
+  }
+  while(row=mysql_fetch_row(res)){
+    for(i=0;i<mysql_num_fields(res);i++){
+      if(row[i]!=NULL)
+	printf("%s\t",row[i]);
+    }
+    printf("\n");
+  }
+  mysql_free_result(res);
+}
+//query11
+void Cuenta(MYSQL *mysql){
+  char buscar[100],buffer[1024];
+  int i;
+  MYSQL_RES *res;
+  MYSQL_ROW row;
+  system("clear");
+  sprintf(buffer,"SELECT idReservacion,CONCAT(nombre,' ',apellido) AS nombre,hn.tipo,fechaCheckIn,fechaCheckOut,COUNT(DISTINCT pro.idProducto) AS productos, COUNT(DISTINCT s.idServicio) AS servicios,paq.idPaquete,noches+paq.precio+COALESCE(puntos_total,0) as Total FROM p1_reservaciones LEFT JOIN p1_habitacion_noches hn USING(idReservacion) LEFT JOIN p1_res_pro pro USING(idReservacion) LEFT JOIN p1_res_ser s USING(idReservacion) LEFT JOIN p1_huespedes USING(idHuesped) LEFT JOIN p1_paquetes paq USING(idPaquete) LEFT JOIN p1_puntos_negativos USING(idReservacion) WHERE fechaCheckIn IS NOT NULL AND fechaCheckOut IS NOT NULL GROUP BY idReservacion;");
+  if(mysql_query(mysql,buffer)){
+    printf("Error con el query\n");
+    return;
+  }
+  if(!(res=mysql_store_result(mysql))){
+    printf("No hay presidentes con ese apellido\n");
+    return;
+  }
+  while(row=mysql_fetch_row(res)){
+    for(i=0;i<mysql_num_fields(res);i++){
+      if(row[i]!=NULL)
+	printf("%s\t",row[i]);
+    }
+    printf("\n");
+  }
+  mysql_free_result(res);
+}
+/***********************
+/*query 12
+/**********************/
+//agregar empleados
+void nuevoEmpleado(MYSQL *mysql){
+  char buscar[100],buffer[1024],  nombre[25],  apellido[25],  fechaNac[12];
+  char cuenta[25];
+  float comision;
+  int idTurno, idTipo, idHotel, idPV;
+  int i, opc;
+  MYSQL_RES *res;
+  MYSQL_ROW row;
+  system("clear");
+  printf("1. Vendedor\n2. Empleado\n3.Gerente\nOpción:" );
+  scanf("%i", &opc);
+  if(opc==1){
+    idTipo=3;
+    getchar();
+    printf("Nombre: ");
+    scanf("%s",nombre);
+    printf("Apellido: ");
+    scanf("%s",apellido);
+    printf("fechaNac (aaaa-mm-dd):");
+    scanf("%s",fechaNac);
+    printf("Cuenta: ");
+    scanf("%s", cuenta);
+    printf("Turno: ");
+    scanf("%d", &idTurno);
+    printf("Punto de venta: ");
+    scanf("%i", &idPV);
+    printf("Comisión(0.00-1.00): ");
+    scanf("%f", &comision);
+    sprintf(buffer,"INSERT INTO p1_empleados(nombre, apellido, fechaNac, cuenta, comision, idTurno, idTipo, idPV) VALUES('%s', '%s', '%s', '%s', %1.2f, %d, %d, %d)", nombre, apellido, fechaNac, cuenta, comision, idTurno, idTipo, idPV);
+  }//if
+  else if(opc==2){
+    idTipo=1;
+    getchar();
+    printf("Nombre: ");
+    scanf("%s",nombre);
+    printf("Apellido: ");
+    scanf("%s",apellido);
+    printf("fechaNac (aaaa-mm-dd):");
+    scanf("%s",fechaNac);
+    printf("Cuenta: ");
+    scanf("%s", cuenta);
+    printf("Turno: ");
+    scanf("%d", &idTurno);
+    printf("Hotel: ");
+    scanf("%d", &idHotel);
+    sprintf(buffer,"INSERT INTO p1_empleados(nombre, apellido, fechaNac, cuenta, idTurno, idTipo, idHotel) VALUES('%s', '%s', '%s', '%s', %d, %d, %d)", nombre, apellido, fechaNac, cuenta, idTurno, idTipo, idHotel);
+  }//elif
+  else if(opc==3){
+    idTipo=2;
+    getchar();
+    printf("Nombre: ");
+    scanf("%s",nombre);
+    printf("Apellido: ");
+    scanf("%s",apellido);
+    printf("fechaNac (aaaa-mm-dd):");
+    scanf("%s",fechaNac);
+    printf("Cuenta: ");
+    scanf("%s", cuenta);
+    printf("Turno: ");
+    scanf("%d", &idTurno);
+    printf("Hotel: ");
+    scanf("%d", &idHotel);
+    sprintf(buffer,"INSERT INTO p1_empleados(nombre, apellido, fechaNac, cuenta, idTurno, idTipo, idHotel) VALUES('%s', '%s', '%s', '%s', %d, %d, %d)", nombre, apellido, fechaNac, cuenta, idTurno, idTipo, idHotel);
+  }//elif
+  else{
+    printf("Esa opción no es válida\n");
+  }
+  if(mysql_query(mysql,buffer)){
+    printf("Error con el query\n");
+    return;
+  }
+}
+
+//agregar huespedes
+void nuevoHuesped(MYSQL *mysql){
+  char buscar[100],buffer[1024],  nombre[25],  apellido[25],  numTarjeta[20], direccion[50];
+  char cuenta[20], contrasenia[20];
+  int idCategoria;
+  int i, opc, opc1;
+  MYSQL_RES *res;
+  MYSQL_ROW row;
+  system("clear");
+  printf("1. SILVER\n2. GOLD\nOpción: " );
+  scanf("%i", &opc);
+  if(opc==1){
+    idCategoria=1;
+  }//if
+  else if(opc==2){
+    idCategoria=2;
+  }//elif
+  else{
+    printf("Esa opción no es válida\n");
+  }
+  getchar();
+  printf("Nombre: ");
+  gets(nombre);
+  printf("Apellido: ");
+  gets(apellido);
+  printf("Dirección: ");
+  gets(direccion);
+  printf("# de tarjeta: ");
+  gets(numTarjeta);
+  printf("¿Quieres dar de alta una cuenta?\n1.Sí\n2.No\nOpción: ");
+  scanf("%d", &opc1);
+  if(opc1==1){
+    printf("Cuenta: ");
+    scanf("%s", cuenta);
+    printf("Contraseña: ");
+    scanf("%s", contrasenia);
+  }
+
+  //query
+  if(opc1==1){
+    sprintf(buffer,"INSERT INTO p1_huespedes(direccion, numTarjeta, contrasenia, cuenta, nombre, apellido,idCategoria) VALUES('%s', '%s', '%s', '%s', '%s', '%s',%d)", direccion, numTarjeta, contrasenia, cuenta, nombre, apellido, idCategoria);
+  }
+  else{
+    sprintf(buffer,"INSERT INTO p1_huespedes(direccion, numTarjeta, nombre, apellido,idCategoria) VALUES('%s', '%s', '%s', '%s', %d)", direccion, numTarjeta, nombre, apellido, idCategoria);
+  }
+  if(mysql_query(mysql,buffer)){
+    printf("Error con el query\n");
+    return;
+  }
+}
+//agregar reservaciones
+void nuevaReservacion(MYSQL *mysql){
+  char buscar[100],buffer[1024],  nombre[25],  apellido[25],  numTarjeta[20], direccion[50];
+  char cuenta[20], contrasenia[20], fechaInicial[12], fechaSalida[12], fechaCheckIn[12], fechaCheckOut[12], fechaVendido[12];
+  int idCategoria, idHabitacion;
+  int i, opc, opc1, idEmpleado, idPaquete, idHuesped, idTemporada;
+  MYSQL_RES *res;
+  MYSQL_ROW row;
+  system("clear");
+
+  printf("***Nueva reservación***\n");
+  printf("Fecha inicial(aaaa-mm-dd): ");
+  scanf("%s", fechaInicial);
+  printf("Fecha salida(aaaa-mm-dd)");
+  scanf("%s", fechaSalida);
+  printf("ID de empleado: ");
+  scanf("%d", &idEmpleado);
+  printf("ID de habitación: ");
+  scanf("%d", &idHabitacion);
+  printf("ID de paquete: ");
+  scanf("%d", &idPaquete);
+  printf("ID del huésped: ");
+  scanf("%d", &idHuesped);
+  printf("Fecha de venta(aaaa-mm-dd): ");
+  scanf("%s", fechaVendido);
+
+  printf("¿Está en alguna temporada?\n1.Sí\n2.No\nOpción: ");
+  scanf("%d", &opc1);
+  if(opc1==1){
+    printf("ID de la temporada: ");
+    scanf("%d", &idTemporada);
+    sprintf(buffer, "INSERT INTO p1_reservaciones(fechaRes, fechaSalida,idEmpleado, idHabitacion, idPaquete, idHuesped, idTemporada, fechaVendido) VALUES('%s','%s',%d,%d,%d,%d,%d,'%s')",fechaInicial, fechaSalida, idEmpleado, idHabitacion, idPaquete, idHuesped, idTemporada, fechaVendido);
+  }
+  
+  sprintf(buffer, "INSERT INTO p1_reservaciones(fechaRes, fechaSalida, idEmpleado, idHabitacion, idPaquete, idHuesped, fechaVendido) VALUES('%s','%s',%d,%d,%d,%d,'%s')", fechaInicial, fechaSalida, idEmpleado, idHabitacion, idPaquete, idHuesped, fechaVendido);
+  //query
+  if(mysql_query(mysql,buffer)){
+    printf("Error con el query\n");
+    return;
+  }
+}
+
+void checkIn(MYSQL *mysql){
+  char buffer[1024];
+}
+
+void checkOut(MYSQL *mysql){
+}
+
+void nuevaCancelacion(MYSQL *mysql){
+}
+
+void nuevoProductio(MYSQL *mysql){
+}
+
+void nuevoTipoHabitacion(MYSQL *mysql){
+
+}
+
+void nuevoTipoProductio(MYSQL *mysql){}
+
+void nuevoTurno(MYSQL *mysql){}
+
+void nuevoServicio(MYSQL *mysql){}
+
+void nuevoPV(MYSQL *mysql){}
+
+void nuevoHotel(MYSQL *mysql){}

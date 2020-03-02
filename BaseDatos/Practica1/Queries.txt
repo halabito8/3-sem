@@ -1,0 +1,11 @@
+SELECT idReservacion,CONCAT(nombre,' ',apellido) AS nombre,th.tipo,fechaCheckIn,fechaCheckOut,COUNT(DISTINCT pro.idProducto) AS productos,
+COUNT(DISTINCT s.idServicio) AS servicios,th.precio+paq.precio
+FROM p1_reservaciones
+LEFT JOIN p1_habitaciones USING(idHabitacion)
+LEFT JOIN p1_tipoHabitacion th USING(idtipoHabitacion)
+LEFT JOIN p1_res_pro pro USING(idReservacion)
+LEFT JOIN p1_res_ser s USING(idReservacion)
+LEFT JOIN p1_huespedes USING(idHuesped)
+LEFT JOIN p1_paquetes paq USING(idPaquete)
+WHERE fechaCheckIn IS NOT NULL AND fechaCheckOut IS NOT NULL
+GROUP BY idReservacion;

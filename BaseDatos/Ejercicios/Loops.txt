@@ -1,0 +1,82 @@
+delimiter \\
+CREATE FUNCTION rfactorial (numero INT) RETURNS INT
+BEGIN
+DECLARE resultado,contador INT;
+SET resultado=1;
+SET contador=1;
+REPEAT
+  SET resultado=resultado*contador;
+  SET contador=contador+1;
+UNTIL contador>numero;
+END REPEAT;
+RETURN resultado;
+END\\
+
+delimiter ;
+
+delimiter \\
+CREATE FUNCTION lfactorial (numero INT) RETURNS INT
+BEGIN
+DECLARE resultado,contador INT;
+SET resultado=1;
+SET contador=1;
+LOOP
+  SET resultado=resultado*contador;
+  SET contador=contador+1;
+  IF contador<numero THEN
+    ITERATE LOOP;
+  END IF;
+  LEAVE LOOP;
+END LOOP;
+RETURN resultado;
+END\\
+
+delimiter ;
+
+delimiter \\
+CREATE FUNCTION wfactorial (numero INT) RETURNS INT
+BEGIN
+DECLARE resultado,contador INT;
+SET resultado=1;
+SET contador=1;
+WHILE contador>numero DO
+  SET resultado=resultado*contador;
+  SET contador=contador+1;
+END WHILE;
+RETURN resultado;
+END\\
+
+delimiter ;
+
+delimiter \\
+CREATE FUNCTION lpotencia (numero INT,potencia INT) RETURNS INT
+BEGIN
+DECLARE contador INT;
+SET contador=0;
+WHILE contador contador<potencia DO
+  SET numero=numero*numero;
+END WHILE;
+RETURN numero;
+END\\
+
+CREATE FUNCTION rpotencia (numero INT,potencia INT) RETURNS INT
+BEGIN
+DECLARE contador INT;
+SET contador=0;
+REPEAT
+  SET numero=numero*numero;
+  SET contador=contador+1;
+UNTIL contador>potencia;
+END REPEAT;
+RETURN numero;
+END\\
+
+CREATE FUNCTION wpotencia (numero INT,potencia INT) RETURNS INT
+BEGIN
+DECLARE contador INT;
+SET contador=0;
+WHILE contador<=potencia do
+  SET numero=numero*numero;
+END WHILE;
+RETURN numero;
+END\\

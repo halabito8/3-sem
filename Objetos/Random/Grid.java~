@@ -1,0 +1,21 @@
+import java.awt.*;
+import javax.swing.*;
+
+class Grid extends JPanel{
+  public Grid(){
+    setSize(600,200);
+    setBackground(Color.green);
+    JTextField texto=new JTextField(10);
+    JButton boton2=new JButton("B2");
+    JButton boton5=new JButton("B5");
+    setLayout(new GridLayout(3,2));
+    Border obj3=new Border();
+    Flow obj=new Flow();
+    this.add(obj3);
+    this.add(boton2);
+    this.add(obj);
+    this.add(obj);
+    this.add(boton5);
+    this.add(obj3);
+  }
+}

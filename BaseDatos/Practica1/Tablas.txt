@@ -1,0 +1,183 @@
+CREATE TABLE p1_turnos(
+  idTurno INT UNSIGNED AUTO_INCREMENT NOT NULL,
+  PRIMARY KEY(idTurno),
+  horae TIME NOT NULL,
+  horas TIME NOT NULL
+);
+
+CREATE TABLE p1_tipoEmpleado(
+  idTipo INT UNSIGNED AUTO_INCREMENT NOT NULL,
+  PRIMARY KEY(idTipo),
+  puesto VARCHAR(25) NOT NULL
+);
+
+CREATE TABLE p1_empleados(
+  idEmpleado INT UNSIGNED AUTO_INCREMENT NOT NULL,
+  PRIMARY KEY(idEmpleado),
+  nombre VARCHAR(25) NOT NULL,
+  apellido VARCHAR(25) NOT NULL,
+  fechaNac DATE NOT NULL,
+  cuenta VARCHAR(25) NOT NULL,
+  comision DECIMAL(4,3),
+  idTurno INT UNSIGNED
+  REFERENCES p1_turnos(idTurno) ON DELETE RESTRICT,
+  idTipo INT UNSIGNED
+  REFERENCES p1_tipoEmpleado ON DELETE RESTRICT,
+  idHotel INT UNSIGNED
+  REFERENCES p1_hoteles(idHotel) ON DELETE RESTRICT,
+  idPV INT UNSIGNED
+  REFERENCES p1_pv(idPV) ON DELETE RESTRICT
+);
+
+CREATE TABLE p1_ausencias(
+  idAusencia INT UNSIGNED AUTO_INCREMENT NOT NULL,
+  PRIMARY KEY(idAusencia),
+  fecha DATE NOT NULL,
+  idEmpleado INT UNSIGNED
+  REFERENCES p1_empleados(idEmpleado) ON DELETE CASCADE
+);
+
+CREATE TABLE p1_hoteles(
+  idHotel INT UNSIGNED AUTO_INCREMENT NOT NULL,
+  PRIMARY KEY(idHotel),
+  ubicacion VARCHAR(25) NOT NULL,
+  numeroCuartos INT NOT NULL,
+  nombre VARCHAR(25) NOT NULL
+);
+
+CREATE TABLE p1_pv(
+  idPV INT UNSIGNED AUTO_INCREMENT NOT NULL,
+  PRIMARY KEY(idPV),
+  nombre VARCHAR(25) NOT NULL,
+  ubicacion VARCHAR(25) NOT NULL
+);
+
+CREATE TABLE p1_tipoHabitacion(
+  idTipoHabitacion INT UNSIGNED AUTO_INCREMENT NOT NULL,
+  PRIMARY KEY(idTipoHabitacion),
+  tipo VARCHAR(25) NOT NULL,
+  precio INT NOT NULL
+);
+
+CREATE TABLE p1_habitaciones(
+  idHabitacion INT UNSIGNED AUTO_INCREMENT NOT NULL,
+  PRIMARY KEY(idHabitacion),
+  numeroHabitacion INT NOT NULL,
+  idTipoHabitacion INT UNSIGNED
+  REFERENCES p1_tipoHabitacion(idTipoHabitacion) ON DELETE RESTRICT,
+  idHotel INT UNSIGNED
+  REFERENCES p1_hoteles(idHotel) ON DELETE RESTRICT
+);
+
+CREATE TABLE p1_temporadas(
+  idTemporada INT UNSIGNED AUTO_INCREMENT NOT NULL,
+  PRIMARY KEY(idTemporada),
+  diaI INT NOT NULL,
+  mesI INT NOT NULL ,
+  diaF INT NOT NULL,
+  mesF INT NOT NULL,
+  nombre VARCHAR(25) NOT NULL
+);
+
+CREATE TABLE p1_categorias(
+  idCategoria INT UNSIGNED AUTO_INCREMENT NOT NULL,
+  PRIMARY KEY(idCategoria),
+  tipoCategoria VARCHAR(20) NOT NULL
+);
+
+CREATE TABLE p1_huespedes(
+  idHuesped INT UNSIGNED AUTO_INCREMENT NOT NULL,
+  PRIMARY KEY(idHuesped),
+  direccion VARCHAR(50),
+  numTarjeta VARCHAR(20) NOT NULL,
+  contrasenia VARCHAR(20) UNIQUE,
+  cuenta VARCHAR(20) UNIQUE,
+  nombre VARCHAR(25) NOT NULL,
+  apellido VARCHAR(25) NOT NULL,
+  idCategoria INT UNSIGNED
+  REFERENCES p1_categorias(idCategoria) ON DELETE RESTRICT
+);
+
+CREATE TABLE p1_paquetes(
+  idPaquete INT UNSIGNED AUTO_INCREMENT NOT NULL,
+  PRIMARY KEY(idPaquete),
+  puntos INT NOT NULL,
+  precio DECIMAL(9,2) NOT NULL
+);
+
+CREATE TABLE p1_reservaciones(
+  idReservacion INT UNSIGNED AUTO_INCREMENT NOT NULL,
+  PRIMARY KEY(idReservacion),
+  fechaCheckIn DATE,
+  fechaCheckOut DATE,
+  fechaRes DATE NOT NULL,
+  fechaSalida DATE NOT NULL,
+  idEmpleado INT UNSIGNED
+  REFERENCES p1_empleados(idEmpleado) ON DELETE SET NULL,
+  idHabitacion INT UNSIGNED
+  REFERENCES p1_habitaciones(idHabitacion) ON DELETE SET NULL,
+  idPaquete INT UNSIGNED
+  REFERENCES p1_paquetes(idPaquete) ON DELETE RESTRICT,
+  idHuesped INT UNSIGNED
+  REFERENCES p1_huespedes(idHuesped) ON DELETE RESTRICT,
+  idTemporada INT UNSIGNED
+  REFERENCES p1_temporadas(idTemporada) ON DELETE SET NULL
+);
+
+CREATE TABLE p1_emp_paq(
+  idEmpleado INT UNSIGNED
+  REFERENCES p1_empleados(idEmpleado) ON DELETE CASCADE,
+  idPaquete INT UNSIGNED
+  REFERENCES p1p1_paquetes(idPaquete) ON DELETE CASCADE,
+  PRIMARY KEY(idEmpleado, idPaquete)
+);
+
+CREATE TABLE p1_res_ser(
+  idReservacion INT UNSIGNED
+  REFERENCES p1_reservaciones(idReservacion) ON DELETE CASCADE,
+  idServicio INT UNSIGNED
+  REFERENCES p1_servicios(idServicio) ON DELETE RESTRICT,
+  PRIMARY KEY(idReservacion, idServicio)
+);
+
+
+
+CREATE TABLE p1_servicios(
+  idServicio INT UNSIGNED AUTO_INCREMENT NOT NULL,
+  PRIMARY KEY(idServicio),
+  tipo VARCHAR(100) NOT NULL,
+  puntos INT NOT NULL
+);
+
+
+
+CREATE TABLE p1_productos(
+  idProducto INT UNSIGNED AUTO_INCREMENT NOT NULL,
+  PRIMARY KEY(idProducto),
+  nombre VARCHAR(25),
+  puntos INT,
+  idTipoProducto INT UNSIGNED
+  REFERENCES p1_tipoProducto(idTipoProducto) ON DELETE RESTRICT
+);
+
+CREATE TABLE p1_tipoProducto(
+  idTipoProducto INT UNSIGNED AUTO_INCREMENT NOT NULL,
+  PRIMARY KEY(idTipoProducto),
+  idProducto INT
+);
+
+
+CREATE TABLE p1_res_pro(
+  idReservacion INT UNSIGNED
+  REFERENCES p1_reservaciones(idReservacion) ON DELETE CASCADE,
+  idProducto INT UNSIGNED
+  REFERENCES p1_productos(idProducto) ON DELETE RESTRICT,
+  PRIMARY KEY(idReservacion,idProducto)
+);
+
+CREATE TABLE p1_cancelaciones(
+  idCancelacion INT UNSIGNED AUTO_INCREMENT NOT NULL,
+  PRIMARY KEY(idCancelacion),
+  idReservacion INT UNSIGNED
+  REFERENCES p1_reservaciones(idReservacion) ON DELETE RESTRICT
+);

@@ -1,0 +1,55 @@
+CREATE TABLE ej1_examen(
+idExamen INT UNSIGNED AUTO_INCREMENT NOT NULL,
+materia VARCHAR(30) NOT NULL,
+idTipo INT UNSIGNED NOT NULL,
+PRIMARY KEY(idExamen),
+CONSTRAINT idTipo_FK FOREIGN KEY REFERENCES ej1_tipoexamen (idTipo) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE ej1_calif(
+calificacion DECIMAL(4,2) NOT NULL,
+idAlumno INT UNSIGNED NOT NULL REFERENCES ej1_alumnos (idAlumno) ON DELETE CASCADE ON UPDATE CASCADE,
+idExamen INT UNSIGNED NOT NULL REFERENCES ej1_examen (idExamen) ON DELETE SET NULL ON UPDATE CASCADE,
+PRIMARY KEY (idAlumno,idExamen)
+);
+
+CREATE TABLE ej1_tipoexamen(
+idTipo INT UNSIGNED AUTO_INCREMENT NOT NULL,
+tipo ENUM('S','M','F'),
+PRIMARY KEY (idTipo)
+);
+
+1. Alumnos que no han faltado
+SELECT a.nombre FROM ej1_alumnos a LEFT JOIN ej1_Ausencias au USING(idAlumno) where idAusencia is NULL;
+
+2. Nombre y numero de faltas de cada Alumnos
+SELECT a.nombre,COUNT(idAusencia) FROM ej1_alumnos a LEFT JOIN ej1_Ausencias au USING(idAlumno) GROUP BY a.nombre ORDER BY idAlumno;
+
+3. Faltas por genero
+SELECT genero,COUNT(idAusencia) FROM ej1_alumnos a LEFT JOIN ej1_Ausencias au USING(idAlumno) GROUP BY genero;
+
+4. Calificacion maxima,minima,promedio y numero de alumnos de cada examen
+SELECT idExamen,MAX(calificacion) as maximo,MIN(calificacion) as minimo,AVG(calificacion) as promedio,COUNT(idAlumno) as Alumnos FROM ej1_calif GROUP BY idExamen;
+
+5. Numero de alumnos por genero
+SELECT genero,COUNT(genero) FROM ej1_alumnos GROUP BY genero;
+
+6. Nombre de los alumnos y su promedio
+SELECT nombre,TRUNCATE(AVG(calificacion),2) FROM ej1_calif RIGHT JOIN ej1_alumnos USING(idAlumno) GROUP BY idAlumno;;
+
+7. Nombre de los alumnos con el promedio mas alto
+SELECT nombre,TRUNCATE(AVG(calificacion)) as promedio FROM ej1_calif RIGHT JOIN ej1_alumnos USING(idAlumno) GROUP BY idAlumno
+HAVING promedio=(SELECT AVG(calificacion) as calificacion FROM ej1_calif RIGHT JOIN ej1_alumnos USING(idAlumno) GROUP BY idAlumno ORDER BY calificacion desc LIMIT 1);
+
+8. Nombre de los alumnos con promedio reprobado
+SELECT nombre FROM ej1_alumnos LEFT JOIN ej1_calif USING(idAlumno) GROUP BY nombre HAVING AVG(calificacion)<6;
+
+9. Promedio de examenes por tipo
+SELECT tipo,AVG(calificacion) FROM ej1_calif LEFT JOIN ej1_examen USING(idExamen) LEFT JOIN ej1_tipoexamen USING(idTipo) GROUP BY idTipo;
+
+10. Numero de faltas por mes
+SELECT MONTH(fecha),COUNT(idAusencia) FROM ej1_Ausencias GROUP BY MONTH(fecha);
+
+11. Nombre de los alumnos que mas han faltado
+SELECT nombre,COUNT(idAusencia) as numero FROM ej1_Ausencias RIGHT JOIN ej1_alumnos USING(idAlumno) GROUP BY nombre
+HAVING numero=(SELECT COUNT(idAusencia) as cuantos FROM ej1_Ausencias RIGHT JOIN ej1_alumnos USING(idAlumno) GROUP BY nombre ORDER BY cuantos desc LIMIT 1);
